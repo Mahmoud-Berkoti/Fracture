@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fracture · {{ result.target }} · scan report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Fracture/1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13151a;
+      --surface-2: #1a1d24;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #e6e6e6;
+      --text-dim: #8a8a90;
+      --text-faint: #5a5a5f;
+      --critical: #ff4444;
+      --high: #ff8c00;
+      --medium: #ffd700;
+      --low: #4fc3f7;
+      --info: #9e9e9e;
+      --accent: #00d4ff;
+      --success: #22c55e;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ----- header ----- */
+    .hero {
+      position: relative;
+      padding: 32px 48px 28px;
+      background:
+        radial-gradient(ellipse 1200px 400px at 50% -50%, rgba(0, 212, 255, 0.10), transparent 60%),
+        linear-gradient(180deg, #0e1118 0%, var(--surface) 100%);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: linear-gradient(180deg, black 0%, transparent 80%);
+      -webkit-mask-image: linear-gradient(180deg, black 0%, transparent 80%);
+      pointer-events: none;
+    }
+    .hero-row {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+    .wordmark .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 16px var(--accent);
+    }
+    .wordmark .name { color: var(--text); }
+    .wordmark .subtitle {
+      color: var(--text-dim);
+      font-weight: 400;
+      font-size: 13px;
+    }
+    .meta {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-item .label {
+      color: var(--text-faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .meta-item .value {
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid currentColor;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .status-pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* ----- layout ----- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 48px;
+    }
+    section + section { margin-top: 40px; }
+    h2 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-faint);
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      font-family: var(--mono);
+    }
+
+    /* ----- executive summary strip ----- */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border-strong);
+      padding: 20px;
+      border-radius: 6px;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeUp 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .stat-card[data-severity="critical"] { border-left-color: var(--critical); }
+    .stat-card[data-severity="high"]     { border-left-color: var(--high); }
+    .stat-card[data-severity="medium"]   { border-left-color: var(--medium); }
+    .stat-card[data-severity="low"]      { border-left-color: var(--low); }
+    .stat-card[data-severity="info"]     { border-left-color: var(--info); }
+    .stat-card .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+    }
+    .stat-card .count {
+      font-family: var(--mono);
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--text);
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ----- chart + timeline ----- */
+    .chart-and-timeline {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+    }
+    .donut-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .donut {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 8px auto 4px;
+    }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .donut-center .total {
+      font-family: var(--mono);
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
+    .donut-center .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 6px;
+    }
+    .donut-legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+      margin-top: 16px;
+    }
+    .donut-legend .item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .donut-legend .swatch {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .donut-legend .name { color: var(--text-dim); }
+    .donut-legend .value { color: var(--text); margin-left: auto; }
+
+    .timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .module-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .module-pill:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      background: var(--surface);
+    }
+    .module-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .module-pill .name { color: var(--text); }
+    .module-pill .count { color: var(--text-dim); font-size: 11px; }
+    .module-pill[data-max="critical"] .dot { background: var(--critical); box-shadow: 0 0 10px rgba(255, 68, 68, 0.6); }
+    .module-pill[data-max="high"]     .dot { background: var(--high); }
+    .module-pill[data-max="medium"]   .dot { background: var(--medium); }
+    .module-pill[data-max="low"]      .dot { background: var(--low); }
+    .module-pill[data-max="info"]     .dot { background: var(--info); }
+    .module-pill[data-count="0"]      .dot { background: var(--success); box-shadow: 0 0 8px rgba(34, 197, 94, 0.4); }
+
+    /* ----- findings ----- */
+    .finding-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .finding {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 500ms ease, transform 500ms ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .finding.visible { opacity: 1; transform: translateY(0); }
+    .finding:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); }
+    .finding[data-severity="critical"] { border-left-color: var(--critical); }
+    .finding[data-severity="high"]     { border-left-color: var(--high); }
+    .finding[data-severity="medium"]   { border-left-color: var(--medium); }
+    .finding[data-severity="low"]      { border-left-color: var(--low); }
+    .finding[data-severity="info"]     { border-left-color: var(--info); }
+    .finding-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      user-select: none;
+    }
+    .finding-head:hover { background: rgba(255, 255, 255, 0.02); }
+    .finding-title {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .finding-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      text-align: right;
+      white-space: nowrap;
+    }
+    .severity-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .severity-badge[data-severity="critical"] { background: rgba(255, 68, 68, 0.12);  color: var(--critical); }
+    .severity-badge[data-severity="high"]     { background: rgba(255, 140, 0, 0.12);  color: var(--high); }
+    .severity-badge[data-severity="medium"]   { background: rgba(255, 215, 0, 0.12);  color: var(--medium); }
+    .severity-badge[data-severity="low"]      { background: rgba(79, 195, 247, 0.12); color: var(--low); }
+    .severity-badge[data-severity="info"]     { background: rgba(158, 158, 158, 0.12); color: var(--info); }
+    .cwe-chip {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .caret {
+      width: 10px; height: 10px;
+      border-right: 1.5px solid var(--text-faint);
+      border-bottom: 1.5px solid var(--text-faint);
+      transform: rotate(45deg);
+      margin-left: 8px;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .finding.open .caret { transform: rotate(-135deg); }
+
+    .finding-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 400ms ease;
+    }
+    .finding.open .finding-body { max-height: 4000px; }
+    .finding-body-inner {
+      padding: 4px 22px 22px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .field-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .description {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .repro-steps {
+      margin: 0;
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .repro-steps li { color: var(--text); font-size: 13px; line-height: 1.5; }
+    .repro-steps li::marker { color: var(--text-faint); font-family: var(--mono); font-size: 11px; }
+    .repro-steps code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--accent);
+    }
+    .remediation {
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.16);
+      border-left: 3px solid var(--success);
+      padding: 14px 18px;
+      border-radius: 4px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .remediation .field-label { color: var(--success); }
+    .evidence-block { position: relative; }
+    .code-block {
+      position: relative;
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #08090d;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      color: var(--text);
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.55;
+      margin: 0;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .copy-btn.copied { color: var(--success); border-color: var(--success); }
+
+    .empty-state {
+      padding: 60px;
+      text-align: center;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 40px auto 0;
+      padding: 24px 48px 32px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .hero { padding: 20px 24px; }
+      main { padding: 24px 20px; }
+      .summary { grid-template-columns: repeat(2, 1fr); }
+      .chart-and-timeline { grid-template-columns: 1fr; }
+      .meta { gap: 16px; }
+      footer { padding: 20px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-row">
+      <div class="wordmark">
+        <span class="dot"></span>
+        <span class="name">FRACTURE</span>
+        <span class="subtitle">payment API scanner</span>
+      </div>
+      <div class="meta">
+        <div class="meta-item">
+          <span class="label">Target</span>
+          <span class="value">{{ result.target }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Base URL</span>
+          <span class="value">{{ result.base_url }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Started</span>
+          <span class="value">{{ started_display }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Duration</span>
+          <span class="value">{{ duration_display }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Modules</span>
+          <span class="value">{{ result.modules_run | join(", ") }}</span>
+        </div>
+      </div>
+      <span class="status-pill" style="color: {{ status_color }}">{{ status_label }}</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="summary" aria-label="Severity summary">
+      {% for sev in severity_order %}
+      <article class="stat-card"
+               data-severity="{{ sev }}"
+               style="animation-delay: {{ loop.index0 * 80 }}ms">
+        <div class="label">{{ sev | upper }}</div>
+        <div class="count">{{ severity_counts[sev] }}</div>
+      </article>
+      {% endfor %}
+    </section>
+
+    <section class="chart-and-timeline">
+      <div class="panel donut-wrap">
+        <h2>Distribution</h2>
+        <div class="donut">
+          <svg viewBox="0 0 100 100" width="100%" height="100%" id="donut-svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="35" fill="none"
+                    stroke="rgba(255,255,255,0.06)" stroke-width="14"/>
+          </svg>
+          <div class="donut-center">
+            <div class="total">{{ total_findings }}</div>
+            <div class="label">Findings</div>
+          </div>
+        </div>
+        <div class="donut-legend"
+             data-counts='{
+               {%- for sev in severity_order -%}
+                 "{{ sev }}": {{ severity_counts[sev] }}{% if not loop.last %},{% endif %}
+               {%- endfor -%}
+             }'
+             data-colors='{
+               {%- for sev in severity_order -%}
+                 "{{ sev }}": "{{ severity_colors[sev] }}"{% if not loop.last %},{% endif %}
+               {%- endfor -%}
+             }'>
+          {% for sev in severity_order %}
+          <div class="item">
+            <span class="swatch" style="background: {{ severity_colors[sev] }}"></span>
+            <span class="name">{{ sev | capitalize }}</span>
+            <span class="value">{{ severity_counts[sev] }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Attack module timeline</h2>
+        <div class="timeline">
+          {% if not module_summary %}
+            <div style="color: var(--text-dim); font-family: var(--mono); font-size: 12px;">
+              No modules ran.
+            </div>
+          {% endif %}
+          {% for m in module_summary %}
+          <a class="module-pill"
+             href="#first-{{ m.name }}"
+             data-module="{{ m.name }}"
+             data-max="{{ m.max_severity }}"
+             data-count="{{ m.count }}">
+            <span class="dot"></span>
+            <span class="name">{{ m.name }}</span>
+            <span class="count">{{ m.count }} finding{% if m.count != 1 %}s{% endif %}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="findings">
+      <h2>Findings ({{ total_findings }})</h2>
+      <div class="finding-list">
+        {% if not findings %}
+        <div class="empty-state">
+          No findings. Scanner ran cleanly — either the target is hardened against
+          the configured modules, or no probes were enabled.
+        </div>
+        {% endif %}
+        {% set seen_modules = [] %}
+        {% for f in findings %}
+        <article class="finding"
+                 data-severity="{{ f.severity }}"
+                 data-module="{{ f.module }}"
+                 id="finding-{{ loop.index }}"
+                 {% if f.module not in seen_modules %}data-first-of-module="{{ f.module }}"{% endif %}>
+          {% if f.module not in seen_modules %}
+            <span id="first-{{ f.module }}" style="position: absolute; margin-top: -80px;"></span>
+            {% if seen_modules.append(f.module) %}{% endif %}
+          {% endif %}
+          <header class="finding-head">
+            <span class="severity-badge" data-severity="{{ f.severity }}">{{ f.severity }}</span>
+            {% if f.cwe_id %}<span class="cwe-chip">{{ f.cwe_id }}</span>{% endif %}
+            <div class="finding-title">{{ f.title }}</div>
+            <div class="finding-meta">
+              {{ f.module }}{% if f.endpoint %} · {{ f.endpoint }}{% endif %}
+            </div>
+            <span class="caret" aria-hidden="true"></span>
+          </header>
+          <div class="finding-body">
+            <div class="finding-body-inner">
+              <div>
+                <div class="field-label">Description</div>
+                <div class="description">{{ f.description }}</div>
+              </div>
+              {% if f.reproduction_steps %}
+              <div>
+                <div class="field-label">Reproduction</div>
+                <ol class="repro-steps">
+                  {% for step in f.reproduction_steps %}<li>{{ step }}</li>{% endfor %}
+                </ol>
+              </div>
+              {% endif %}
+              <div class="remediation">
+                <div class="field-label">Remediation</div>
+                <div>{{ f.remediation }}</div>
+              </div>
+              {% if f.evidence %}
+              <div class="evidence-block">
+                <div class="field-label">Evidence</div>
+                <button class="copy-btn" type="button" aria-label="Copy evidence JSON">Copy</button>
+                <pre class="code-block"><code>{{ f.evidence | pretty_json }}</code></pre>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Generated by Fracture · {{ result.target }} · {{ started_display }}</span>
+    <span>Self-contained · works offline · {{ total_findings }} finding{% if total_findings != 1 %}s{% endif %}</span>
+  </footer>
+
+  <script>
+  (function () {
+    // ------- 1. SVG donut chart (vanilla, in-browser) -------
+    const legend = document.querySelector(".donut-legend");
+    const counts = JSON.parse(legend.dataset.counts);
+    const colors = JSON.parse(legend.dataset.colors);
+    const order = ["critical", "high", "medium", "low", "info"];
+    const total = order.reduce((acc, k) => acc + (counts[k] || 0), 0);
+    const svg = document.getElementById("donut-svg");
+
+    if (total > 0 && svg) {
+      const cx = 50, cy = 50, r = 35;
+      const circumference = 2 * Math.PI * r;
+      let cumulativeAngle = 0;
+      const startAngle = -90;
+
+      order.forEach((sev, idx) => {
+        const value = counts[sev] || 0;
+        if (value === 0) return;
+        const proportion = value / total;
+        const length = proportion * circumference;
+        const arc = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        arc.setAttribute("cx", cx);
+        arc.setAttribute("cy", cy);
+        arc.setAttribute("r", r);
+        arc.setAttribute("fill", "none");
+        arc.setAttribute("stroke", colors[sev]);
+        arc.setAttribute("stroke-width", 14);
+        arc.setAttribute("stroke-linecap", "butt");
+        arc.setAttribute(
+          "transform",
+          `rotate(${startAngle + cumulativeAngle} ${cx} ${cy})`
+        );
+        arc.setAttribute("stroke-dasharray", `0 ${circumference}`);
+        arc.style.transition = `stroke-dasharray 700ms cubic-bezier(0.22, 1, 0.36, 1) ${idx * 80}ms`;
+        svg.appendChild(arc);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            arc.setAttribute(
+              "stroke-dasharray",
+              `${length} ${circumference - length}`
+            );
+          });
+        });
+        cumulativeAngle += proportion * 360;
+      });
+    }
+
+    // ------- 2. Finding cards: scroll-in via IntersectionObserver -------
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+    document.querySelectorAll(".finding").forEach(el => observer.observe(el));
+
+    // ------- 3. Finding expand/collapse -------
+    document.querySelectorAll(".finding-head").forEach(head => {
+      head.addEventListener("click", () => {
+        head.parentElement.classList.toggle("open");
+      });
+    });
+
+    // ------- 4. Copy-to-clipboard buttons -------
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const code = btn.parentElement.querySelector("code").textContent;
+        const done = () => {
+          btn.textContent = "✓ Copied";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "Copy";
+            btn.classList.remove("copied");
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(done).catch(() => {
+            // fallback: use selection
+            const range = document.createRange();
+            range.selectNodeContents(btn.parentElement.querySelector("code"));
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            try { document.execCommand("copy"); done(); } catch (_) {}
+            sel.removeAllRanges();
+          });
+        }
+      });
+    });
+
+    // ------- 5. Module timeline: click pill → smooth-scroll to first finding -------
+    document.querySelectorAll(".module-pill").forEach(pill => {
+      pill.addEventListener("click", e => {
+        const moduleName = pill.dataset.module;
+        const target = document.querySelector(
+          `.finding[data-first-of-module="${moduleName}"]`
+        );
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.classList.add("open");
+        }
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
