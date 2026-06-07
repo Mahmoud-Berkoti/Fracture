@@ -1,12 +1,12 @@
 # Fracture
 
-**Payment API security testing framework.** Surfaces the vulnerability classes that endemic to fintech infrastructure — broken object-level authorization, race conditions on transaction endpoints, JWT auth bypass, business-logic flaws in financial operations, and webhook signature failures — none of which generic API scanners catch reliably.
+> ⚠️ **Authorized use only.** This repository contains an intentionally vulnerable component (`target/`). It must not be deployed to a public network. The scanner (`scanner/`) is a security-testing tool — use it only against systems you own or have explicit written authorization to test. See [`SECURITY.md`](SECURITY.md) for details.
+
+**Payment API security testing framework.** Surfaces the vulnerability classes endemic to fintech infrastructure — broken object-level authorization, race conditions on transaction endpoints, JWT auth bypass, business-logic flaws in financial operations, and webhook signature failures — none of which generic API scanners catch reliably.
 
 Ships as two components in one repo: a deliberately-vulnerable target API (**BrokenCheckout**) and the **Fracture scanner** that runs a structured attack suite against any configured target. One command (`docker compose up`) starts the target, waits for it to become healthy, then runs the full scan and writes JSONL + HTML reports to `./output/`.
 
-![Fracture HTML report — executive summary, severity distribution, attack-module timeline](docs/screenshots/report-hero.png)
-
-> Sample scan against BrokenCheckout: 14 findings across 5 modules in ~0.5s. Full report at [`docs/screenshots/report.png`](docs/screenshots/report.png).
+Sample scan against BrokenCheckout produces **14 findings across 5 modules in ~0.5s** (7 critical, 4 high, 2 medium, 0 low/info).
 
 ---
 
@@ -156,4 +156,4 @@ Targets are configured as YAML files under `scanner/config/targets/`. The bundle
 
 ## License
 
-MIT. BrokenCheckout is deliberately vulnerable and must not be deployed to a public-internet network.
+[MIT](LICENSE). BrokenCheckout is deliberately vulnerable and must not be deployed to a public-internet network. See [`SECURITY.md`](SECURITY.md) for the full responsible-use statement and how to report vulnerabilities in the scanner itself.

@@ -4,8 +4,10 @@ services:
   target:
     build: ./target
     container_name: fracture-target
+    # Bind to loopback only — BrokenCheckout is deliberately vulnerable
+    # and MUST NOT be exposed to a public network. Change at your own risk.
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./target/data:/data
     healthcheck:
