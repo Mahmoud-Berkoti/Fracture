@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Fracture artifacts — keep the directory, ignore generated reports
+output/*.html
+output/*.jsonl
+!output/.gitkeep
+
+# Target runtime state (SQLite DB + WAL files)
+target/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Claude Code local settings
+.claude/settings.local.json

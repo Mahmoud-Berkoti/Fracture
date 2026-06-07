@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  target:
+    build: ./target
+    container_name: fracture-target
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./target/data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  scanner:
+    build: ./scanner
+    container_name: fracture-scanner
+    depends_on:
+      target:
+        condition: service_healthy
+    volumes:
+      - ./output:/app/output
+    environment:
+      - TARGET=brokencheckout
+    command: python main.py --target brokencheckout --output /app/output
