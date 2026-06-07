@@ -1,0 +1,76 @@
+name: BrokenCheckout
+base_url: http://target:8000
+
+auth:
+  type: jwt
+  login_endpoint: /v1/auth/login
+  credentials:
+    - username: alice@example.com
+      password: password123
+    - username: bob@example.com
+      password: password123
+
+modules:
+  bola:
+    enabled: true
+    endpoints:
+      - path: /v1/payment-methods/{id}
+        method: GET
+        id_param: id
+        create_path: /v1/payment-methods
+        create_body:
+          brand: visa
+          last4: "4242"
+          exp_month: 12
+          exp_year: 2030
+      - path: /v1/invoices/{id}
+        method: GET
+        id_param: id
+        create_path: /v1/invoices
+        create_body:
+          amount: 9999
+          currency: usd
+      - path: /v1/customers/{id}/subscriptions
+        method: GET
+        id_param: id
+        use_victim_user_id: true
+
+  race:
+    enabled: true
+    concurrency: 20
+    endpoints:
+      - path: /v1/refunds
+        method: POST
+        body:
+          charge_id: "{charge_id}"
+        bootstrap:
+          method: POST
+          path: /v1/charges
+          body:
+            amount: 1000
+            currency: usd
+          capture:
+            charge_id: id
+      - path: /v1/charges
+        method: POST
+        body:
+          amount: 1000
+          currency: usd
+          coupon: SAVE10
+
+  auth:
+    enabled: true
+    endpoints:
+      - path: /v1/payment-methods
+        method: GET
+
+  business_logic:
+    enabled: true
+    endpoints:
+      - path: /v1/charges
+        method: POST
+
+  webhook:
+    enabled: true
+    endpoint: /v1/webhooks
+    secret: whsec_test_secret
