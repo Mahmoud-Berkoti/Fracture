@@ -1,4 +1,4 @@
-"""HTML report generation — section 6.2 of the spec.
+"""HTML report generation - section 6.2 of the spec.
 
 Renders `ScanResult` into a self-contained HTML file via Jinja2. The
 output requires only a Google Fonts request to render correctly; CSS,
@@ -8,8 +8,8 @@ Spec deviations (each is intentional; reasoning):
 
   - Section 6.2.1 (`ui-ux-pro-max` skill): the skill is not installed in
     this environment and there's no way for the runtime to invoke it.
-    The applied design system — JetBrains Mono + Inter, near-black
-    surfaces, cyan accent, severity-coded left borders — derives
+    The applied design system - JetBrains Mono + Inter, near-black
+    surfaces, cyan accent, severity-coded left borders - derives
     directly from the explicit guidance in section 6.2.2.
 
   - Section 6.2.4 (Chart.js inlined): the donut chart is rendered with

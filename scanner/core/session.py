@@ -39,7 +39,7 @@ class ScanContext:
         return next(iter(self.sessions))
 
     def user_pair(self) -> tuple[str, str]:
-        """Return (alice, bob) — first two authenticated users."""
+        """Return (alice, bob) - first two authenticated users."""
         if len(self.sessions) < 2:
             raise RuntimeError(
                 "BOLA testing requires at least two authenticated credentials"

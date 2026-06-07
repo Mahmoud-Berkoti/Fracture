@@ -16,7 +16,7 @@ INTENTIONAL VULNERABILITIES:
 
   /v1/payment-methods (GET):
     - Used by scanner/modules/auth.py as the target for expired-token,
-      alg:none, and tampered-claim probes. Endpoint itself is "correct" —
+      alg:none, and tampered-claim probes. Endpoint itself is "correct" -
       the bypass is in auth.py's token validation.
 """
 from __future__ import annotations

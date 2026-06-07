@@ -28,7 +28,7 @@ def main() -> int:
     _configure_logging()
     parser = argparse.ArgumentParser(
         prog="fracture",
-        description="Fracture — payment API security scanner.",
+        description="Fracture - payment API security scanner.",
     )
     parser.add_argument(
         "--target",

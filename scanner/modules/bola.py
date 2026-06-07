@@ -1,4 +1,4 @@
-"""BOLA / IDOR attack module — section 5.4 of the spec.
+"""BOLA / IDOR attack module - section 5.4 of the spec.
 
 Per-endpoint pattern:
   1. User A POSTs to `create_path` with `create_body` and captures the
@@ -9,7 +9,7 @@ Per-endpoint pattern:
      per-request ownership. Reported as CWE-639, severity critical.
 
 The two users are taken from the first two credentials in the target
-config — *not* hardcoded "alice" / "bob" — so the same module works
+config - *not* hardcoded "alice" / "bob" - so the same module works
 against any target that supplies at least two logins.
 
 Endpoints without `create_path` are skipped with a warning: without a way
@@ -56,7 +56,7 @@ async def _probe_endpoint(
     resource_id: str | None = None
 
     if endpoint.use_victim_user_id:
-        # No create step — the owner's user_id IS the path id.
+        # No create step - the owner's user_id IS the path id.
         if not owner_id or owner_id == "<unknown>":
             log.warning(
                 "bola_skip_no_owner_id",
@@ -157,7 +157,7 @@ async def _probe_endpoint(
             reproduction_steps=(
                 [
                     f"Authenticate as user A ({owner_name})",
-                    f"Note user A's id ({resource_id!r}) — used directly as the path parameter",
+                    f"Note user A's id ({resource_id!r}) - used directly as the path parameter",
                     f"Authenticate as user B ({attacker_name})",
                     f"Issue {endpoint.method} {access_path} with user B's bearer token",
                     "Observe HTTP 200 returning user A's data (see evidence.response_body)",
@@ -175,7 +175,7 @@ async def _probe_endpoint(
             remediation=(
                 "Enforce object ownership at the query layer. The lookup must "
                 "include both the resource id and the authenticated user's id "
-                "(`WHERE id = ? AND user_id = ?`). Return HTTP 404 — not 403 — "
+                "(`WHERE id = ? AND user_id = ?`). Return HTTP 404 - not 403 - "
                 "for both missing and unauthorized resources so existence is not "
                 "leaked through status-code differences."
             ),

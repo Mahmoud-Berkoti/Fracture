@@ -9,7 +9,7 @@ INTENTIONAL VULNERABILITIES:
 
   - CWE-294 (Authentication Bypass by Capture-Replay):
     Even when the signature is provided, the timestamp component is parsed
-    only for signing — it is NOT compared against now() to enforce a replay
+    only for signing - it is NOT compared against now() to enforce a replay
     tolerance window. A captured event remains processable forever.
 
   - No event_id de-duplication: even a properly-signed-within-window event

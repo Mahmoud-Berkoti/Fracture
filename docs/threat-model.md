@@ -1,7 +1,7 @@
-# Fracture — Threat Model
+# Fracture - Threat Model
 
 Fracture is built to surface the vulnerability classes that actually matter
-in payment APIs — the ones general-purpose web scanners systematically miss
+in payment APIs - the ones general-purpose web scanners systematically miss
 because they require either (a) cross-user reasoning, (b) true concurrent
 HTTP dispatch within a millisecond window, or (c) understanding of the
 business domain the API operates in.
@@ -39,17 +39,17 @@ for an operation that should succeed at most once.
 link.
 
 **Impact:** double-refund / coupon reuse / double-spend / subscription
-billing-state corruption — direct financial loss.
+billing-state corruption - direct financial loss.
 
 ### T3. JWT authentication bypass
 
 - `alg:none` acceptance (CWE-347)
-- Weak/guessable signing secret (CWE-798) — tested against a 13-entry
+- Weak/guessable signing secret (CWE-798) - tested against a 13-entry
   common-secret wordlist
 - `exp` claim not validated (CWE-613)
 
 **Attacker capability:** any internet host that can craft an HTTP
-request — no prior credentials required if `alg:none` works.
+request - no prior credentials required if `alg:none` works.
 
 **Impact:** authentication as any user; perpetual token validity.
 
@@ -95,14 +95,14 @@ application; cause an observed event to fire repeatedly.
 
 Fracture is purpose-built. It does **not** test:
 
-- **SQL injection** — covered by generic scanners (sqlmap, Burp).
-- **XSS / CSRF** — JSON-API-focused; no HTML response surface tested.
-- **OAuth 2.0 / OIDC flows** — JWT bearer-token only.
-- **GraphQL APIs** — REST-only path templates.
-- **Rate limiting / DoS** — Fracture's concurrent dispatch is for race
+- **SQL injection** - covered by generic scanners (sqlmap, Burp).
+- **XSS / CSRF** - JSON-API-focused; no HTML response surface tested.
+- **OAuth 2.0 / OIDC flows** - JWT bearer-token only.
+- **GraphQL APIs** - REST-only path templates.
+- **Rate limiting / DoS** - Fracture's concurrent dispatch is for race
   detection, not load generation. Defaults to N=20.
-- **Mass-targeting** — single-target per invocation by design.
-- **Production exploitation** — scanner is for authorized test
+- **Mass-targeting** - single-target per invocation by design.
+- **Production exploitation** - scanner is for authorized test
   environments only. Honest scoping: see `README.md` § "What Fracture
   Does Not Do".
 
@@ -113,7 +113,7 @@ Fracture is purpose-built. It does **not** test:
 Fracture treats the scanner and target as separate trust domains
 joined by HTTP over a Docker bridge network. The scanner has the same
 privileges as any external caller with valid credentials from the YAML
-config — no in-process access to the target, no shared filesystem
+config - no in-process access to the target, no shared filesystem
 beyond the `./output` mount. This deliberately mirrors a real
 black/grey-box engagement.
 

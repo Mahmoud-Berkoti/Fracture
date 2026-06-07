@@ -1,4 +1,4 @@
-# Fracture — Payment API Security Testing Framework
+# Fracture - Payment API Security Testing Framework
 ## Technical Specification v1.0
 
 ---
@@ -24,10 +24,10 @@ Payment APIs routinely expose resource identifiers in URLs and request bodies. W
 **Attack pattern:** Authenticate as User A, capture a resource identifier belonging to User B, issue requests against that identifier using User A's session token.
 
 **Target endpoints in payment context:**
-- `GET /v1/payment-methods/{id}` — retrieve another user's saved card
-- `GET /v1/invoices/{id}` — read another user's invoice
+- `GET /v1/payment-methods/{id}` - retrieve another user's saved card
+- `GET /v1/invoices/{id}` - read another user's invoice
 - `POST /v1/refunds` with a `charge_id` belonging to another user
-- `GET /v1/customers/{id}/subscriptions` — enumerate another user's subscriptions
+- `GET /v1/customers/{id}/subscriptions` - enumerate another user's subscriptions
 
 **Detection signal:** HTTP 200 response with data payload when the requesting user does not own the resource. HTTP 403 or 404 is the correct response.
 
@@ -137,7 +137,7 @@ fracture/
 
 ---
 
-## 4. BrokenCheckout — Deliberately Vulnerable Target API
+## 4. BrokenCheckout - Deliberately Vulnerable Target API
 
 BrokenCheckout is a FastAPI application that simulates a payment processing API with intentional security flaws. It is the canonical test target for Fracture and ships as part of the same repository.
 
@@ -386,7 +386,7 @@ async def attack_webhook(client: httpx.AsyncClient, config: WebhookConfig) -> li
             reproduction_steps=[
                 f"Send POST {config.endpoint} with a valid JSON payload",
                 "Omit the signature header entirely",
-                "Observe HTTP 200 — event is processed"
+                "Observe HTTP 200 - event is processed"
             ],
             remediation="Require the signature header on all webhook requests. Reject with HTTP 400 if the header is missing or invalid before processing any payload content."
         ))
@@ -411,7 +411,7 @@ async def attack_webhook(client: httpx.AsyncClient, config: WebhookConfig) -> li
             reproduction_steps=[
                 "Capture a legitimate webhook event with a valid signature",
                 "Re-send the same event with the original timestamp after the tolerance window has expired",
-                "Observe HTTP 200 — replayed event is processed again"
+                "Observe HTTP 200 - replayed event is processed again"
             ],
             remediation="Reject webhook events where the timestamp is more than 300 seconds old. Store processed event IDs and reject duplicates."
         ))
@@ -427,7 +427,7 @@ async def attack_webhook(client: httpx.AsyncClient, config: WebhookConfig) -> li
 
 Every scan writes a line-delimited JSON log to `./output/scan_{timestamp}.jsonl`. Each line is one finding serialized as JSON. This format is chosen deliberately: it is grep-able, streamable, and directly ingestible by SIEM platforms like Azure Sentinel, which mirrors real security tooling conventions.
 
-### 6.2 HTML Report — Frontend Design Requirements
+### 6.2 HTML Report - Frontend Design Requirements
 
 After each scan, Fracture generates a self-contained HTML report at `./output/report_{timestamp}.html` using Jinja2 templating. This report is a first-class visual deliverable. It must look nothing like a generic security dashboard. The design goal is a report that a Stripe or Shopify security engineer opens and immediately recognizes as something built with taste and intent.
 

@@ -1,4 +1,4 @@
-"""JWT authentication-bypass attack module — section 2.3 of the spec.
+"""JWT authentication-bypass attack module - section 2.3 of the spec.
 
 Three independent probes per configured endpoint:
 
@@ -17,7 +17,7 @@ Three independent probes per configured endpoint:
      forge a token with `exp` ~1h in the past, using whichever bypass
      mechanism is already known to work (weak secret preferred, else
      alg:none). 200 means the server is not enforcing `exp` independently
-     of the bypass — replayed tokens stay valid indefinitely.
+     of the bypass - replayed tokens stay valid indefinitely.
 
 Probes share the legitimate user's payload as a base so the `sub` claim
 references a real user id.
@@ -78,7 +78,7 @@ def _b64url_decode(data: str) -> bytes:
 
 
 def _decode_unsafe(token: str) -> tuple[dict, dict]:
-    """Decode without verifying — we just need access to the claims to clone them."""
+    """Decode without verifying - we just need access to the claims to clone them."""
     h, p, _ = token.split(".")
     return json.loads(_b64url_decode(h)), json.loads(_b64url_decode(p))
 
@@ -175,15 +175,15 @@ async def _probe_alg_none(
             'Build a JWT header `{"alg":"none","typ":"JWT"}` and base64url-encode it',
             "Base64url-encode any payload containing a valid `sub` claim "
             f"(used here: {payload})",
-            "Concatenate as `<header>.<payload>.` (note the trailing dot — empty signature)",
+            "Concatenate as `<header>.<payload>.` (note the trailing dot - empty signature)",
             f"Send {endpoint.method} {endpoint.path} with header "
             f"`Authorization: Bearer <token>` (token: `{_redact_token(forged)}`)",
-            "Observe HTTP 200 — the server skipped signature verification",
+            "Observe HTTP 200 - the server skipped signature verification",
         ],
         remediation=(
             "Reject any token whose `alg` header is `none`. In PyJWT, always pass an "
             "explicit `algorithms=[\"HS256\"]` (or whichever algorithm you use) to "
-            "`jwt.decode()` — never omit it. The same fix applies to jose, "
+            "`jwt.decode()` - never omit it. The same fix applies to jose, "
             "jsonwebtoken, and similar libraries across stacks."
         ),
         endpoint=endpoint.path,
@@ -240,7 +240,7 @@ async def _probe_weak_secret(
                     f"signed using secret {secret!r}",
                     f"Send {endpoint.method} {endpoint.path} with "
                     f"`Authorization: Bearer <token>` (token: `{_redact_token(token)}`)",
-                    "Observe HTTP 200 — the signing key is in a small enumerable set",
+                    "Observe HTTP 200 - the signing key is in a small enumerable set",
                 ],
                 remediation=(
                     "Generate a high-entropy signing key with `secrets.token_bytes(32)` "
@@ -307,7 +307,7 @@ async def _probe_expired_token(
             description=(
                 f"The endpoint accepted a JWT whose `exp` claim is {exp_age} seconds "
                 f"in the past (token forged via {method_label}). The handler is not "
-                f"enforcing token expiry — a leaked or replayed token remains valid "
+                f"enforcing token expiry - a leaked or replayed token remains valid "
                 f"indefinitely."
             ),
             evidence={

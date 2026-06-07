@@ -1,4 +1,4 @@
-"""Business-logic flaw detection — section 2.4 of the spec.
+"""Business-logic flaw detection - section 2.4 of the spec.
 
 Probes the configured charge endpoints with payloads that a generic
 schema validator would let through, but which a domain-aware handler
@@ -92,8 +92,8 @@ _TESTS: tuple[_LogicTest, ...] = (
         title_template="Extremely large amount accepted on {path}",
         description_template=(
             "Endpoint {path} accepted `amount: 9223372036854775807` (INT64_MAX). "
-            "Either the value is stored as-is — corrupting any downstream "
-            "aggregation query — or it wraps to a negative integer in some "
+            "Either the value is stored as-is - corrupting any downstream "
+            "aggregation query - or it wraps to a negative integer in some "
             "language/database boundary, compounding with the negative-amount "
             "vulnerability."
         ),
@@ -179,7 +179,7 @@ async def _run_test(
             reproduction_steps=[
                 "Authenticate as any valid user",
                 f"Send {endpoint.method} {endpoint.path} with body {test.body}",
-                f"Observe HTTP {resp.status_code} — the malformed payload was accepted",
+                f"Observe HTTP {resp.status_code} - the malformed payload was accepted",
             ],
             remediation=test.remediation,
             endpoint=endpoint.path,

@@ -1,8 +1,8 @@
 # Fracture
 
-> ⚠️ **Authorized use only.** This repository contains an intentionally vulnerable component (`target/`). It must not be deployed to a public network. The scanner (`scanner/`) is a security-testing tool — use it only against systems you own or have explicit written authorization to test. See [`SECURITY.md`](SECURITY.md) for details.
+> ⚠️ **Authorized use only.** This repository contains an intentionally vulnerable component (`target/`). It must not be deployed to a public network. The scanner (`scanner/`) is a security-testing tool - use it only against systems you own or have explicit written authorization to test. See [`SECURITY.md`](SECURITY.md) for details.
 
-**Payment API security testing framework.** Surfaces the vulnerability classes endemic to fintech infrastructure — broken object-level authorization, race conditions on transaction endpoints, JWT auth bypass, business-logic flaws in financial operations, and webhook signature failures — none of which generic API scanners catch reliably.
+**Payment API security testing framework.** Surfaces the vulnerability classes endemic to fintech infrastructure - broken object-level authorization, race conditions on transaction endpoints, JWT auth bypass, business-logic flaws in financial operations, and webhook signature failures - none of which generic API scanners catch reliably.
 
 Ships as two components in one repo: a deliberately-vulnerable target API (**BrokenCheckout**) and the **Fracture scanner** that runs a structured attack suite against any configured target. One command (`docker compose up`) starts the target, waits for it to become healthy, then runs the full scan and writes JSONL + HTML reports to `./output/`.
 
@@ -49,10 +49,10 @@ That's it. On a fresh machine it takes ~30 seconds: target builds and starts (~1
 python3.12 -m venv .venv
 .venv/bin/pip install -r scanner/requirements.txt -r target/requirements.txt pytest
 
-# Terminal 1 — start BrokenCheckout
+# Terminal 1 - start BrokenCheckout
 cd target && ../.venv/bin/uvicorn main:app --port 8000
 
-# Terminal 2 — point the scanner at it
+# Terminal 2 - point the scanner at it
 cd scanner && ../.venv/bin/python main.py --target brokencheckout --output ../output \
     --config-dir config/targets
 # (override base_url in YAML to http://localhost:8000 first)
@@ -70,7 +70,7 @@ The test fixture spawns BrokenCheckout in a subprocess and asserts that every do
 
 ## Vulnerability index
 
-The full table — every flaw, file, route, detection signal, and correct remediation — lives in [`docs/vulnerability-index.md`](docs/vulnerability-index.md). The short version:
+The full table - every flaw, file, route, detection signal, and correct remediation - lives in [`docs/vulnerability-index.md`](docs/vulnerability-index.md). The short version:
 
 | # | Class | Affected route | CWE | Severity |
 |---|---|---|---|---|
@@ -99,7 +99,7 @@ Honest scoping matters for a security tool. Fracture is purpose-built and narrow
 - **No SQL injection, XSS, or CSRF probes.** Those are well-covered by general-purpose scanners (`sqlmap`, Burp, OWASP ZAP). Running Fracture and one of those in tandem is the intended workflow.
 - **No mass targeting.** Single-target per invocation; no scanning of CIDR ranges or domain lists.
 - **No detection evasion.** All requests advertise `User-Agent: Fracture/1.0` and use unobscured payloads. This is a test tool, not an offensive one.
-- **No persistence.** The scanner is stateless across runs — every invocation re-authenticates and re-probes from scratch.
+- **No persistence.** The scanner is stateless across runs - every invocation re-authenticates and re-probes from scratch.
 
 ---
 
@@ -117,7 +117,7 @@ Line-delimited JSON; one finding per line. `grep`-able, streamable, directly ing
 
 Self-contained dark-themed HTML report. Renders correctly with no network access (only Google Fonts is loaded externally, and the page is readable without it). Includes severity-distribution donut chart, attack-module timeline with pass/fail indicators, and expandable finding cards with full reproduction steps + evidence JSON.
 
-The report is designed to be the artifact you attach to a security review document — not a debugging dump.
+The report is designed to be the artifact you attach to a security review document - not a debugging dump.
 
 ---
 

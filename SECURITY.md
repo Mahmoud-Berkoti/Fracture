@@ -28,17 +28,17 @@ US, the Computer Misuse Act in the UK, equivalent statutes elsewhere).
 
 ## Reporting a vulnerability in Fracture itself
 
-If you discover a security issue in the **scanner** (`scanner/`) — for
+If you discover a security issue in the **scanner** (`scanner/`) - for
 example, a crafted target response that crashes the scanner, a vulnerability
 that could be exploited via a malicious target YAML config, or a finding-
-serialization issue that could lead to log injection — please report it via
+serialization issue that could lead to log injection - please report it via
 GitHub's private vulnerability disclosure:
 
 → https://github.com/Mahmoud-Berkoti/Fracture/security/advisories/new
 
 Do not open a public issue for security-sensitive reports.
 
-Issues in BrokenCheckout (`target/`) are **not** considered vulnerabilities —
+Issues in BrokenCheckout (`target/`) are **not** considered vulnerabilities -
 they are documented intentional flaws and the entire point of the project.
 
 ## Supported versions

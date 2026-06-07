@@ -1,10 +1,10 @@
-"""Webhook security attack module — section 5.5 of the spec.
+"""Webhook security attack module - section 5.5 of the spec.
 
 Two probes against the configured webhook endpoint:
 
   1. Missing signature header (CWE-345, critical): POST a valid JSON
      event with no signature header at all. A correct webhook handler
-     must reject unauthenticated requests outright — accepting them lets
+     must reject unauthenticated requests outright - accepting them lets
      any internet host inject arbitrary payment-state events into the
      application's bookkeeping.
 
@@ -95,7 +95,7 @@ async def _probe_missing_signature(
                 f"Body: {payload_str}",
                 "Omit every signature header (no `Fracture-Signature`, no "
                 "`Stripe-Signature`, no `X-Hub-Signature-256`)",
-                "Observe HTTP 200 — the event was accepted and processed",
+                "Observe HTTP 200 - the event was accepted and processed",
             ],
             remediation=(
                 "Reject any webhook request whose signature header is missing, "
@@ -147,7 +147,7 @@ async def _probe_replay_outside_window(
             description=(
                 f"The webhook endpoint accepted an event with a cryptographically "
                 f"valid HMAC signature but a timestamp {REPLAY_AGE_SECONDS} seconds "
-                f"in the past — well outside the industry-standard 300s tolerance "
+                f"in the past - well outside the industry-standard 300s tolerance "
                 f"window. A captured webhook can be re-sent indefinitely, so a "
                 f"single observed event becomes a perpetual trigger."
             ),
@@ -173,7 +173,7 @@ async def _probe_replay_outside_window(
                 f"Build a signature header `t={timestamp},v1=<hex-hmac>` where the "
                 f"timestamp is {REPLAY_AGE_SECONDS}s in the past",
                 f"Send POST {endpoint_path} with that header and the original payload",
-                "Observe HTTP 200 — the replayed event is processed again",
+                "Observe HTTP 200 - the replayed event is processed again",
             ],
             remediation=(
                 "After verifying the signature, reject the request when "

@@ -1,4 +1,4 @@
-"""Attack-validation suite — section 7 of the spec.
+"""Attack-validation suite - section 7 of the spec.
 
 Runs the scanner end-to-end against an in-process BrokenCheckout and
 asserts that each intentional vulnerability surfaces a finding of the
@@ -157,7 +157,7 @@ def test_business_logic_negative_amount(scan_result):
 # ----- Universal contract: every finding is fully-formed -----
 
 def test_every_finding_has_required_fields(scan_result):
-    assert scan_result.findings, "scan produced zero findings — modules misconfigured?"
+    assert scan_result.findings, "scan produced zero findings - modules misconfigured?"
     for f in scan_result.findings:
         assert f.module, f"finding missing module: {f}"
         assert f.severity in {"critical", "high", "medium", "low", "info"}, \

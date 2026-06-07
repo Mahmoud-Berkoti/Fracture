@@ -1,4 +1,4 @@
-"""Race-condition attack module — section 5.3 of the spec.
+"""Race-condition attack module - section 5.3 of the spec.
 
 Per endpoint:
   1. (optional) Run the `bootstrap` request once, capture response fields
@@ -9,7 +9,7 @@ Per endpoint:
   3. Build N coroutines that issue the same request and dispatch them all
      via `asyncio.gather`. gather schedules them into the event loop in a
      single tick, so all N HTTP requests are in-flight before any of them
-     receives a response — which is what's required to trigger TOCTOU
+     receives a response - which is what's required to trigger TOCTOU
      races inside the handler (see section 2.2: "Sequential requests or
      thread-pool-based concurrency will not reliably trigger these
      conditions").
@@ -161,7 +161,7 @@ async def _attack_endpoint(
         user=user_name,
     )
 
-    # All N requests built before any awaited — asyncio.gather schedules
+    # All N requests built before any awaited - asyncio.gather schedules
     # them in the same event-loop tick.
     coros = [
         session.request(endpoint.method, endpoint.path, json=resolved_body)
@@ -239,7 +239,7 @@ async def _attack_endpoint(
                 "(`SELECT ... FOR UPDATE`); "
                 "(2) make the state change atomic with a guarded UPDATE "
                 "(`UPDATE charges SET refunded = true WHERE id = ? AND refunded = false` "
-                "— a zero-row result means another request already won); "
+                "- a zero-row result means another request already won); "
                 "(3) require an `Idempotency-Key` request header and dedupe by that key "
                 "in a unique index. Production payment APIs combine (2) and (3)."
             ),

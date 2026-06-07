@@ -1,4 +1,4 @@
-"""JWT authentication for BrokenCheckout — with intentional flaws.
+"""JWT authentication for BrokenCheckout - with intentional flaws.
 
 INTENTIONAL VULNERABILITIES (each is detected by scanner/modules/auth.py):
 
@@ -12,7 +12,7 @@ INTENTIONAL VULNERABILITIES (each is detected by scanner/modules/auth.py):
      Tokens issued years ago remain valid indefinitely.
 
   3. CWE-798 (Use of Hard-coded Credentials):
-     JWT_SECRET = "secret" — trivially brute-forceable. Attacker with knowledge
+     JWT_SECRET = "secret" - trivially brute-forceable. Attacker with knowledge
      of the secret can forge tokens for any user.
 
 Correct remediation is documented in docs/vulnerability-index.md.

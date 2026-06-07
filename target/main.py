@@ -1,4 +1,4 @@
-"""BrokenCheckout — deliberately vulnerable payment API for Fracture's tests.
+"""BrokenCheckout - deliberately vulnerable payment API for Fracture's tests.
 
 Every router contains documented intentional flaws. See docs/vulnerability-index.md
 for the CWE breakdown and the correct remediation for each one. This is the
@@ -28,7 +28,7 @@ from routers import customers, payments, refunds, webhooks
 async def seed_data() -> None:
     """Seed alice + bob and their owned resources.
 
-    Idempotent — re-runs on container restart are a no-op once users exist.
+    Idempotent - re-runs on container restart are a no-op once users exist.
     Stable IDs (`usr_alice`, `pm_alice_001`, ...) make BOLA reproduction
     steps deterministic across runs.
     """
